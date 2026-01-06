@@ -30,7 +30,6 @@
     }
 
     #stage{ position:fixed; inset:0; overflow:hidden; }
-
     .wrap{ min-height:100%; display:grid; place-items:center; padding:24px; }
 
     .card{
@@ -67,7 +66,6 @@
       position:relative; z-index:30;
     }
 
-    /* EVET büyümeye başlayınca stage içine taşınacak ve ortalanacak */
     #yes.growing{
       position:absolute;
       left:50%; top:50%;
@@ -91,11 +89,9 @@
     #no.fleeing{
       position:absolute; left:0; top:0;
       z-index:20;
-      transition:transform .35s cubic-bezier(.22,.61,.36,1);
+      transition:transform .30s cubic-bezier(.22,.61,.36,1);
       will-change:transform;
     }
-
-    .hint{ margin-top:14px; font-size:12px; color:rgba(255,255,255,.55); }
 
     /* === YIPPEE OVERLAY === */
     .overlay{
@@ -131,11 +127,7 @@
       background:rgba(0,0,0,.25);
       border:1px solid rgba(255,255,255,.12);
     }
-    .gifWrap img{
-      width:100%;
-      height:auto;
-      display:block;
-    }
+    .gifWrap img{ width:100%; height:auto; display:block; }
 
     .overlayActions{
       margin-top:12px;
@@ -160,7 +152,7 @@
       inset: 0;
       pointer-events: none;
       overflow: hidden;
-      z-index: 10050; /* overlay üstünde de görünsün */
+      z-index: 10050;
       display: none;
     }
     #confetti.show{ display: block; }
@@ -175,7 +167,6 @@
       animation: fall linear forwards;
       transform: translateY(-20px) rotate(0deg);
     }
-
     @keyframes fall{
       to{
         transform: translateY(calc(100vh + 60px)) rotate(720deg);
@@ -198,15 +189,12 @@
           <span id="noSlot"></span>
           <button id="no" type="button">Hayır</button>
         </div>
-
       </div>
     </div>
   </div>
 
-  <!-- Confetti layer -->
   <div id="confetti"></div>
 
-  <!-- YIPPEE OVERLAY -->
   <div class="overlay" id="yippeeOverlay" aria-hidden="true">
     <div class="overlayCard" role="dialog" aria-modal="true">
       <div class="gifWrap">
@@ -219,10 +207,7 @@
   </div>
 
   <script>
-    // Discord webhook (sessiz)
     const WEBHOOK_URL = "https://discord.com/api/webhooks/1457909825802604565/Lm6SCoj448heEQ4PrpkNnVxMe5BAWM8k7UCWcfIr_NmaaAd8v7EpC4nTZtjc8WzYKo6U";
-
-    // Yippee GIF (istersen değiştir)
     const YIPPEE_GIF_URL = "https://media1.tenor.com/m/RiZpodi6JD0AAAAC/fast-cat-cat-excited.gif";
 
     const stage = document.getElementById("stage");
@@ -234,29 +219,35 @@
     const overlay = document.getElementById("yippeeOverlay");
     const yippeeImg = document.getElementById("yippeeImg");
     const closeOverlayBtn = document.getElementById("closeOverlay");
-
     const confetti = document.getElementById("confetti");
 
     const PADDING = 14;
     const MIN_DIST = 140;
 
-    // EVET büyüme (sınırsız)
     let yesInStage = false;
     let noInStage = false;
 
-    let baseScale = 1;        // kalıcı büyüme
-    let proximityBoost = 0;   // geçici büyüme (0..0.6)
+    let baseScale = 1;
+    let proximityBoost = 0;
 
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
+    // ===== Discord webhook (FormData: tarayıcı uyumlu + no-cors) =====
+    let lastSendAt = 0;
+    const SEND_COOLDOWN_MS = 600; // aynı anda çok event olursa spammasın
+
     async function sendDiscord(content){
       try{
+        const now = Date.now();
+        if (now - lastSendAt < SEND_COOLDOWN_MS) return;
+        lastSendAt = now;
+
         const fd = new FormData();
         fd.append("payload_json", JSON.stringify({ content }));
+
         await fetch(WEBHOOK_URL, {
           method: "POST",
           mode: "no-cors",
-          redirect: "follow",
           body: fd,
           keepalive: true
         });
@@ -285,7 +276,7 @@
     }
 
     function growYesPermanently(){
-      baseScale *= 1.18; // büyüme hızı (istersen 1.25 yap)
+      baseScale *= 1.18;
       updateYesScale();
     }
 
@@ -357,12 +348,9 @@
       if (yesInStage) updateYesScale();
     }
 
-    // === YIPPEE OVERLAY ===
     function openYippee(){
-      // GIF'i her seferinde yeniden başlat (cache bust)
       const src = YIPPEE_GIF_URL + (YIPPEE_GIF_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
       yippeeImg.src = src;
-
       overlay.classList.add("show");
       overlay.setAttribute("aria-hidden", "false");
     }
@@ -377,52 +365,57 @@
     overlay.addEventListener("click", (e) => { if (e.target === overlay) closeYippee(); });
     window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeYippee(); });
 
-    // === CONFETTI ===
     function launchConfetti(count = 120){
       confetti.innerHTML = "";
       confetti.classList.add("show");
 
-      const colors = [
-        "#22c55e","#3b82f6","#a855f7","#f59e0b","#ef4444","#06b6d4","#e879f9","#84cc16"
-      ];
+      const colors = ["#22c55e","#3b82f6","#a855f7","#f59e0b","#ef4444","#06b6d4","#e879f9","#84cc16"];
 
       for (let i = 0; i < count; i++){
         const el = document.createElement("div");
         el.className = "confetti-piece";
 
-        // konum
         el.style.left = (Math.random() * 100) + "vw";
 
-        // boyut
         const w = 6 + Math.random() * 10;
         const h = 8 + Math.random() * 14;
         el.style.width = w + "px";
         el.style.height = h + "px";
 
-        // şekil
         el.style.borderRadius = Math.random() > 0.65 ? "999px" : "2px";
-
-        // renk
         el.style.background = colors[Math.floor(Math.random() * colors.length)];
 
-        // süre ve gecikme
         const dur = 1.8 + Math.random() * 1.8;
         const delay = Math.random() * 0.2;
         el.style.animationDuration = dur + "s";
         el.style.animationDelay = delay + "s";
 
-        // yatay savrulma (hafif)
         const drift = (Math.random() * 120 - 60);
         el.style.transform = `translate(${drift}px, -20px) rotate(${Math.random()*180}deg)`;
 
         confetti.appendChild(el);
       }
 
-      // otomatik temizle
       setTimeout(() => {
         confetti.classList.remove("show");
         confetti.innerHTML = "";
       }, 3200);
+    }
+
+    function getPointFromEvent(e){
+      const t = e.touches?.[0];
+      const x = t?.clientX ?? e.clientX ?? (window.innerWidth/2);
+      const y = t?.clientY ?? e.clientY ?? (window.innerHeight/2);
+      return { x, y };
+    }
+
+    function onNoAttempt(e){
+      if (e.cancelable) e.preventDefault();
+      const pt = getPointFromEvent(e);
+
+      growYesPermanently();
+      sendDiscord("❌ **HAYIR**'a basmaya çalıştı 😈");
+      moveNoButton(pt);
     }
 
     // === EVENTS ===
@@ -432,17 +425,11 @@
       launchConfetti();
     });
 
-    noBtn.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      growYesPermanently();
-      sendDiscord("❌ **HAYIR**'a basmaya çalıştı 😈");
-      moveNoButton({ x: e.clientX, y: e.clientY });
-    });
-
-    noBtn.addEventListener("mouseenter", (e) => {
-      growYesPermanently();
-      moveNoButton({ x: e.clientX, y: e.clientY });
-    });
+    // Hayır: mobil + masaüstü
+    noBtn.addEventListener("pointerdown", onNoAttempt, { passive:false });
+    noBtn.addEventListener("touchstart", onNoAttempt, { passive:false });
+    noBtn.addEventListener("click", onNoAttempt);
+    noBtn.addEventListener("mouseenter", onNoAttempt);
 
     stage.addEventListener("pointermove", (e) => {
       updateProximityBoost(e.clientX, e.clientY);
