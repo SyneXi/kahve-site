@@ -67,7 +67,6 @@
       position:relative; z-index:30;
     }
 
-    /* EVET büyümeye başlayınca stage içine taşınacak ve ortalanacak */
     #yes.growing{
       position:absolute;
       left:50%; top:50%;
@@ -95,7 +94,6 @@
       will-change:transform;
     }
 
-    /* === YIPPEE OVERLAY === */
     .overlay{
       position:fixed; inset:0;
       display:none;
@@ -148,7 +146,6 @@
     }
     .closeBtn:hover{ filter:brightness(1.05); }
 
-    /* === CONFETTI === */
     #confetti{
       position: fixed;
       inset: 0;
@@ -196,10 +193,8 @@
     </div>
   </div>
 
-  <!-- Confetti layer -->
   <div id="confetti"></div>
 
-  <!-- YIPPEE OVERLAY -->
   <div class="overlay" id="yippeeOverlay" aria-hidden="true">
     <div class="overlayCard" role="dialog" aria-modal="true">
       <div class="gifWrap">
@@ -212,11 +207,7 @@
   </div>
 
   <script>
-    // ✅ BURAYA Cloudflare Worker URL'ni yaz
-    // Örn: https://kahve-bildir.workers.dev
     const NOTIFY_URL = "https://kahve-bildir.kerimhuseyin1434.workers.dev/";
-
-    // Yippee GIF
     const YIPPEE_GIF_URL = "https://media1.tenor.com/m/RiZpodi6JD0AAAAC/fast-cat-cat-excited.gif";
 
     const stage = document.getElementById("stage");
@@ -234,18 +225,16 @@
     const PADDING = 14;
     const MIN_DIST = 140;
 
-    // EVET büyüme (sınırsız)
     let yesInStage = false;
     let noInStage = false;
 
-    let baseScale = 1;        // kalıcı büyüme
-    let proximityBoost = 0;   // geçici büyüme (0..0.6)
+    let baseScale = 1;
+    let proximityBoost = 0;
 
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
-    // ===== Bildirim (Telegram Worker'a) =====
     let lastSendAt = 0;
-    const SEND_COOLDOWN_MS = 700; // aynı anda event çoğalırsa spam azaltır
+    const SEND_COOLDOWN_MS = 700;
 
     async function sendNotify(text){
       try{
@@ -283,7 +272,7 @@
     }
 
     function growYesPermanently(){
-      baseScale *= 1.18; // büyüme hızı
+      baseScale *= 1.18;
       updateYesScale();
     }
 
@@ -306,7 +295,7 @@
       const prev = noBtn.style.transition;
       noBtn.style.transition = "none";
       noBtn.style.transform = `translate(${startX}px, ${startY}px)`;
-      void noBtn.offsetHeight; // reflow
+      void noBtn.offsetHeight;
       noBtn.style.transition = prev;
 
       noInStage = true;
@@ -355,7 +344,6 @@
       if (yesInStage) updateYesScale();
     }
 
-    // === YIPPEE OVERLAY ===
     function openYippee(){
       const src = YIPPEE_GIF_URL + (YIPPEE_GIF_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
       yippeeImg.src = src;
@@ -374,7 +362,6 @@
     overlay.addEventListener("click", (e) => { if (e.target === overlay) closeYippee(); });
     window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeYippee(); });
 
-    // === CONFETTI ===
     function launchConfetti(count = 120){
       confetti.innerHTML = "";
       confetti.classList.add("show");
@@ -414,7 +401,6 @@
       }, 3200);
     }
 
-    // === Mobil uyumlu event noktası ===
     function getPointFromEvent(e){
       const t = e.touches?.[0];
       const x = t?.clientX ?? e.clientX ?? (window.innerWidth/2);
@@ -431,14 +417,12 @@
       moveNoButton(pt);
     }
 
-    // === EVENTS ===
     yesBtn.addEventListener("click", () => {
       sendNotify("✅ <b>EVET</b>'e basıldı! ☕🎉");
       openYippee();
       launchConfetti();
     });
 
-    // Hayır: mobil + masaüstü hepsi
     noBtn.addEventListener("pointerdown", onNoAttempt, { passive:false });
     noBtn.addEventListener("touchstart", onNoAttempt, { passive:false });
     noBtn.addEventListener("click", onNoAttempt);
