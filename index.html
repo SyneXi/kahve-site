@@ -1,440 +1,424 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kahve?</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kahve İçelim mi?</title>
   <style>
     :root{
-      --bg1:#0f1020; --bg2:#151a33;
-      --card:rgba(255,255,255,.08);
-      --stroke:rgba(255,255,255,.12);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.72);
-      --yes-scale:1;
+      --bg1:#fff3f7;
+      --bg2:#e9f7ff;
+      --card:#ffffffcc;
+      --text:#2a2a2a;
+      --yes:#22c55e;
+      --no:#ef4444;
+      --shadow: 0 20px 60px rgba(0,0,0,.12);
     }
-
-    *{box-sizing:border-box}
-    html,body{height:100%}
-
+    *{box-sizing:border-box;}
     body{
       margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--text);
-      background:
-        radial-gradient(1200px 800px at 20% 10%, #3b82f6 0%, transparent 55%),
-        radial-gradient(900px 700px at 90% 30%, #a855f7 0%, transparent 55%),
-        linear-gradient(160deg,var(--bg1),var(--bg2));
+      min-height:100vh;
       overflow:hidden;
+      background:
+        radial-gradient(1200px 800px at 20% 20%, var(--bg2), transparent 60%),
+        radial-gradient(1200px 800px at 80% 80%, var(--bg1), transparent 60%),
+        linear-gradient(135deg, #ffffff, #f7fbff);
+      display:grid;
+      place-items:center;
+      padding:24px;
     }
-
-    #stage{ position:fixed; inset:0; overflow:hidden; }
-
-    .wrap{ min-height:100%; display:grid; place-items:center; padding:24px; }
 
     .card{
-      width:min(560px,92vw);
+      width:min(720px, 92vw);
       background:var(--card);
-      border:1px solid var(--stroke);
-      border-radius:22px;
-      padding:28px 22px;
-      backdrop-filter:blur(10px);
-      box-shadow:0 18px 60px rgba(0,0,0,.35);
-      text-align:center;
+      backdrop-filter: blur(10px);
+      border:1px solid rgba(255,255,255,.6);
+      border-radius:28px;
+      box-shadow: var(--shadow);
+      padding:28px 22px 22px;
       position:relative;
-      z-index:2;
     }
 
-    h1{ font-size:clamp(22px,3.2vw,32px); margin:0 0 10px; letter-spacing:.2px; }
-    p{ margin:0 0 18px; color:var(--muted); font-size:14px; line-height:1.45; }
+    h1{
+      margin:0 0 8px;
+      font-size: clamp(22px, 3.4vw, 36px);
+      text-align:center;
+      letter-spacing:.2px;
+    }
+    p{
+      margin:0 0 18px;
+      text-align:center;
+      opacity:.85;
+      font-size: clamp(14px, 2.2vw, 18px);
+    }
 
-    .btnRow{
-      display:flex; gap:14px; justify-content:center; align-items:center; flex-wrap:wrap;
-      margin-top:10px; position:relative; z-index:5;
+    .center{
+      display:grid;
+      place-items:center;
+      margin: 10px 0 18px;
+    }
+
+    /* --- Panda (CSS) --- */
+    .panda-wrap{
+      width: 220px;
+      height: 220px;
+      position:relative;
+      display:grid;
+      place-items:center;
+      filter: drop-shadow(0 14px 18px rgba(0,0,0,.15));
+    }
+    .panda{
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: #fff;
+      position:relative;
+      border: 4px solid rgba(0,0,0,.06);
+      animation: idleBob 3.2s ease-in-out infinite;
+    }
+    @keyframes idleBob{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-6px); }
+    }
+    .ear{
+      width: 58px; height: 58px;
+      background:#111;
+      border-radius: 50%;
+      position:absolute;
+      top:-18px;
+    }
+    .ear.left{ left: 12px; transform: rotate(-12deg); }
+    .ear.right{ right: 12px; transform: rotate(12deg); }
+
+    .eyePatch{
+      width: 54px; height: 44px;
+      background:#111;
+      border-radius: 50%;
+      position:absolute;
+      top:56px;
+    }
+    .eyePatch.left{ left: 28px; transform: rotate(18deg); }
+    .eyePatch.right{ right: 28px; transform: rotate(-18deg); }
+
+    .eye{
+      width: 14px; height: 14px;
+      background:#fff;
+      border-radius: 50%;
+      position:absolute;
+      top: 70px;
+      box-shadow: inset 0 0 0 3px rgba(0,0,0,.25);
+    }
+    .eye.left{ left: 54px; }
+    .eye.right{ right: 54px; }
+
+    .nose{
+      width: 18px; height: 14px;
+      background:#111;
+      border-radius: 0 0 10px 10px;
+      position:absolute;
+      top: 98px; left: 50%;
+      transform: translateX(-50%);
+    }
+    .mouth{
+      width: 44px; height: 26px;
+      border: 4px solid #111;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-radius: 0 0 40px 40px;
+      position:absolute;
+      top: 108px; left: 50%;
+      transform: translateX(-50%);
+      opacity:.9;
+    }
+    .blush{
+      width: 26px; height: 16px;
+      background: rgba(255, 105, 180, .35);
+      border-radius: 50%;
+      position:absolute;
+      top: 108px;
+    }
+    .blush.left{ left: 18px; }
+    .blush.right{ right: 18px; }
+
+    .paws{
+      position:absolute;
+      bottom: 10px;
+      width: 170px;
+      display:flex;
+      justify-content: space-between;
+      padding: 0 10px;
+      pointer-events:none;
+    }
+    .paw{
+      width: 46px; height: 32px;
+      background:#111;
+      border-radius: 18px 18px 20px 20px;
+      transform: translateY(10px);
+      opacity:.95;
+    }
+
+    /* --- Buttons --- */
+    .actions{
+      display:flex;
+      justify-content:center;
+      gap:14px;
+      position:relative;
+      padding: 10px 0 0;
+      height: 76px; /* keeps space even when NO moves absolute */
     }
 
     button{
-      border:0; border-radius:14px; padding:12px 18px;
-      font-weight:700; cursor:pointer; font-size:15px;
-      user-select:none; -webkit-tap-highlight-color:transparent;
-      transition:filter .15s ease;
+      border:none;
+      cursor:pointer;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 14px 22px;
+      border-radius: 16px;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      box-shadow: 0 10px 24px rgba(0,0,0,.12);
+      user-select:none;
+      touch-action: manipulation;
     }
+    button:active{ transform: scale(.98); }
 
-    #yes{
-      background:linear-gradient(135deg,#22c55e,#16a34a);
-      color:#fff; box-shadow:0 10px 24px rgba(34,197,94,.25);
-      position:relative; z-index:30;
+    #yesBtn{
+      background: linear-gradient(135deg, #34d399, var(--yes));
+      color:white;
     }
+    #yesBtn:hover{ filter: brightness(1.03); transform: translateY(-2px); }
 
-    #yes.growing{
-      position:absolute;
-      left:50%; top:50%;
-      transform:translate(-50%,-50%) scale(var(--yes-scale));
-      transform-origin:center;
-      transition:transform .28s cubic-bezier(.22,.61,.36,1);
-      will-change:transform;
-      z-index:40;
-      border-radius:22px;
-      padding:16px 24px;
-      font-size:clamp(16px,3vw,28px);
+    #noBtn{
+      background: linear-gradient(135deg, #fb7185, var(--no));
+      color:white;
+      position: absolute; /* we'll place it within .actions */
+      left: 50%;
+      transform: translateX(70px); /* start near the right side of yes */
     }
+    #noBtn:hover{ filter: brightness(1.03); }
 
-    #no{
-      background:linear-gradient(135deg,#ef4444,#dc2626);
-      color:#fff; box-shadow:0 10px 24px rgba(239,68,68,.22);
-      touch-action:none;
-      position:relative; z-index:10;
-    }
-
-    #no.fleeing{
-      position:absolute; left:0; top:0;
-      z-index:20;
-      transition:transform .30s cubic-bezier(.22,.61,.36,1);
-      will-change:transform;
-    }
-
+    /* --- Popup overlay --- */
     .overlay{
-      position:fixed; inset:0;
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.35);
       display:none;
-      align-items:center; justify-content:center;
-      background:rgba(0,0,0,.55);
-      backdrop-filter: blur(6px);
-      z-index:9999;
-      padding:18px;
+      align-items:center;
+      justify-content:center;
+      padding: 22px;
+      z-index: 999;
     }
     .overlay.show{ display:flex; }
 
-    .overlayCard{
+    .popup{
       width:min(520px, 92vw);
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.08);
-      border-radius:22px;
-      box-shadow:0 30px 90px rgba(0,0,0,.55);
-      padding:16px;
+      background: white;
+      border-radius: 26px;
+      box-shadow: 0 30px 100px rgba(0,0,0,.25);
+      padding: 22px 18px 18px;
       text-align:center;
-      animation: pop .18s ease-out;
-    }
-    @keyframes pop{
-      from{ transform: scale(.96); opacity:.6; }
-      to{ transform: scale(1); opacity:1; }
-    }
-
-    .gifWrap{
-      display:grid; place-items:center;
-      border-radius:18px;
+      position:relative;
       overflow:hidden;
-      background:rgba(0,0,0,.25);
-      border:1px solid rgba(255,255,255,.12);
     }
-    .gifWrap img{ width:100%; height:auto; display:block; }
-
-    .overlayActions{
-      margin-top:12px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
+    .popup h2{
+      margin: 8px 0 10px;
+      font-size: clamp(20px, 3.2vw, 30px);
+      letter-spacing:.3px;
     }
-    .closeBtn{
-      background:rgba(255,255,255,.10);
-      color:rgba(255,255,255,.92);
-      border:1px solid rgba(255,255,255,.14);
-      padding:10px 14px;
-      border-radius:14px;
-      cursor:pointer;
-      font-weight:700;
+    .spinText{
+      display:inline-block;
+      font-weight:900;
+      color:#111;
+      animation: spinHappy 1.15s ease-in-out infinite;
+      transform-origin:center;
     }
-    .closeBtn:hover{ filter:brightness(1.05); }
-
-    #confetti{
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 10050;
-      display: none;
-    }
-    #confetti.show{ display: block; }
-
-    .confetti-piece{
-      position: absolute;
-      top: -20px;
-      width: 10px;
-      height: 14px;
-      opacity: .95;
-      border-radius: 2px;
-      animation: fall linear forwards;
-      transform: translateY(-20px) rotate(0deg);
+    @keyframes spinHappy{
+      0%{ transform: rotate(-3deg) scale(1); }
+      50%{ transform: rotate(3deg) scale(1.03); }
+      100%{ transform: rotate(-3deg) scale(1); }
     }
 
-    @keyframes fall{
-      to{
-        transform: translateY(calc(100vh + 60px)) rotate(720deg);
-        opacity: 1;
-      }
+    .jumpPanda{
+      margin: 12px auto 8px;
+      width: 150px; height: 150px;
+      display:grid;
+      place-items:center;
+      animation: jump 0.6s ease-in-out infinite;
+    }
+    @keyframes jump{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-18px); }
+    }
+    .mini{
+      transform: scale(.88);
+      filter: drop-shadow(0 12px 14px rgba(0,0,0,.18));
+    }
+
+    .close{
+      margin-top: 12px;
+      width:100%;
+      background: #111;
+      color:white;
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 16px;
+      box-shadow: none;
+    }
+
+    /* little confetti dots */
+    .dots{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(34,197,94,.35) 0 6px, transparent 7px),
+        radial-gradient(circle at 82% 22%, rgba(239,68,68,.30) 0 7px, transparent 8px),
+        radial-gradient(circle at 26% 78%, rgba(59,130,246,.30) 0 6px, transparent 7px),
+        radial-gradient(circle at 72% 72%, rgba(236,72,153,.28) 0 8px, transparent 9px);
+      opacity:.9;
+    }
+
+    /* Mobile: ensure NO button can still escape but not offscreen */
+    @media (max-width: 420px){
+      button{ font-size: 16px; padding: 12px 18px; }
+      .panda-wrap{ width: 200px; height: 200px; }
     }
   </style>
 </head>
-
 <body>
-  <div id="stage">
-    <div class="wrap">
-      <div class="card">
-        <h1>Kahve içmeye ne dersin ? ☕</h1>
 
-        <div class="btnRow">
-          <span id="yesSlot"></span>
-          <button id="yes" type="button">Evet</button>
+  <div class="card">
+    <h1>Benimle kahve içmeye gelir misin? ☕️</h1>
+    <p>Orta yerdeki tatlı pandamız bile “evet” diye bakıyor 😄</p>
 
-          <span id="noSlot"></span>
-          <button id="no" type="button">Hayır</button>
+    <div class="center">
+      <div class="panda-wrap" aria-label="Tatlı panda">
+        <div class="panda" id="mainPanda">
+          <div class="ear left"></div>
+          <div class="ear right"></div>
+
+          <div class="eyePatch left"></div>
+          <div class="eyePatch right"></div>
+
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+
+          <div class="blush left"></div>
+          <div class="blush right"></div>
+
+          <div class="nose"></div>
+          <div class="mouth"></div>
+
+          <div class="paws">
+            <div class="paw"></div>
+            <div class="paw"></div>
+          </div>
         </div>
       </div>
     </div>
+
+    <div class="actions" id="actions">
+      <button id="yesBtn">EVET</button>
+      <button id="noBtn">HAYIR</button>
+    </div>
   </div>
 
-  <div id="confetti"></div>
+  <!-- Popup -->
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true">
+    <div class="popup">
+      <div class="dots"></div>
 
-  <div class="overlay" id="yippeeOverlay" aria-hidden="true">
-    <div class="overlayCard" role="dialog" aria-modal="true">
-      <div class="gifWrap">
-        <img id="yippeeImg" alt="Yippee!" />
+      <div class="jumpPanda">
+        <div class="panda mini">
+          <div class="ear left"></div>
+          <div class="ear right"></div>
+          <div class="eyePatch left"></div>
+          <div class="eyePatch right"></div>
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="blush left"></div>
+          <div class="blush right"></div>
+          <div class="nose"></div>
+          <div class="mouth"></div>
+          <div class="paws">
+            <div class="paw"></div>
+            <div class="paw"></div>
+          </div>
+        </div>
       </div>
-      <div class="overlayActions">
-        <button class="closeBtn" id="closeOverlay" type="button">Kapat</button>
-      </div>
+
+      <h2><span class="spinText">SENİ ÇOK SEVİYORUM HATUNUM 💖</span></h2>
+      <button class="close" id="closeBtn">Tamam 😌</button>
     </div>
   </div>
 
   <script>
-    const NOTIFY_URL = "https://kahve-bildir.kerimhuseyin1434.workers.dev/";
-    const YIPPEE_GIF_URL = "https://media1.tenor.com/m/RiZpodi6JD0AAAAC/fast-cat-cat-excited.gif";
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn  = document.getElementById("noBtn");
+    const actions = document.getElementById("actions");
+    const overlay = document.getElementById("overlay");
+    const closeBtn = document.getElementById("closeBtn");
 
-    const stage = document.getElementById("stage");
-    const yesBtn = document.getElementById("yes");
-    const noBtn  = document.getElementById("no");
-    const yesSlot = document.getElementById("yesSlot");
-    const noSlot  = document.getElementById("noSlot");
-
-    const overlay = document.getElementById("yippeeOverlay");
-    const yippeeImg = document.getElementById("yippeeImg");
-    const closeOverlayBtn = document.getElementById("closeOverlay");
-
-    const confetti = document.getElementById("confetti");
-
-    const PADDING = 14;
-    const MIN_DIST = 140;
-
-    let yesInStage = false;
-    let noInStage = false;
-
-    let baseScale = 1;
-    let proximityBoost = 0;
-
+    // Place NO button initially within the actions area
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
-    let lastSendAt = 0;
-    const SEND_COOLDOWN_MS = 700;
+    function moveNoButton() {
+      const a = actions.getBoundingClientRect();
+      const b = noBtn.getBoundingClientRect();
 
-    async function sendNotify(text){
-      try{
-        const now = Date.now();
-        if (now - lastSendAt < SEND_COOLDOWN_MS) return;
-        lastSendAt = now;
+      // Random position within the actions box, with padding
+      const pad = 8;
+      const maxX = a.width - b.width - pad;
+      const maxY = a.height - b.height - pad;
 
-        await fetch(NOTIFY_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text })
-        });
-      } catch (_) {}
+      // Bias it away from YES a bit
+      let x = Math.random() * maxX;
+      let y = Math.random() * maxY;
+
+      // clamp for safety
+      x = clamp(x, pad, maxX);
+      y = clamp(y, pad, maxY);
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+      noBtn.style.transform = "none";
     }
 
-    function ensureYesInStage(){
-      if (yesInStage) return;
+    // Make NO "escape" on hover / near mouse / touch
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("mousedown", moveNoButton);
+    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNoButton(); }, {passive:false});
 
-      const r = yesBtn.getBoundingClientRect();
-      yesSlot.style.display = "inline-block";
-      yesSlot.style.width = r.width + "px";
-      yesSlot.style.height = r.height + "px";
+    // Also escape when mouse moves close to it
+    document.addEventListener("mousemove", (e) => {
+      const b = noBtn.getBoundingClientRect();
+      const cx = b.left + b.width/2;
+      const cy = b.top + b.height/2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 90) moveNoButton();
+    });
 
-      stage.appendChild(yesBtn);
-      yesBtn.classList.add("growing");
-
-      stage.style.setProperty("--yes-scale", "1");
-      yesInStage = true;
-    }
-
-    function updateYesScale(){
-      ensureYesInStage();
-      const scale = baseScale * (1 + proximityBoost);
-      stage.style.setProperty("--yes-scale", String(scale));
-    }
-
-    function growYesPermanently(){
-      baseScale *= 1.18;
-      updateYesScale();
-    }
-
-    function ensureNoInStageStartFromCurrentPosition(){
-      if (noInStage) return;
-
-      const btnRectBefore = noBtn.getBoundingClientRect();
-      const stageRect = stage.getBoundingClientRect();
-
-      noSlot.style.display = "inline-block";
-      noSlot.style.width = btnRectBefore.width + "px";
-      noSlot.style.height = btnRectBefore.height + "px";
-
-      stage.appendChild(noBtn);
-      noBtn.classList.add("fleeing");
-
-      const startX = btnRectBefore.left - stageRect.left;
-      const startY = btnRectBefore.top  - stageRect.top;
-
-      const prev = noBtn.style.transition;
-      noBtn.style.transition = "none";
-      noBtn.style.transform = `translate(${startX}px, ${startY}px)`;
-      void noBtn.offsetHeight;
-      noBtn.style.transition = prev;
-
-      noInStage = true;
-    }
-
-    function moveNoButton(point){
-      ensureNoInStageStartFromCurrentPosition();
-
-      const s = stage.getBoundingClientRect();
-      const r = noBtn.getBoundingClientRect();
-
-      const minX = PADDING;
-      const minY = PADDING;
-      const maxX = s.width  - r.width  - PADDING;
-      const maxY = s.height - r.height - PADDING;
-      if (maxX <= minX || maxY <= minY) return;
-
-      const px = (point?.x ?? (s.left + s.width / 2)) - s.left;
-      const py = (point?.y ?? (s.top  + s.height / 2)) - s.top;
-
-      let x = minX + Math.random() * (maxX - minX);
-      let y = minY + Math.random() * (maxY - minY);
-
-      if (Math.abs(x - px) < MIN_DIST) x += (x < px ? -MIN_DIST : MIN_DIST);
-      if (Math.abs(y - py) < MIN_DIST) y += (y < py ? -MIN_DIST : MIN_DIST);
-
-      x = clamp(x, minX, maxX);
-      y = clamp(y, minY, maxY);
-
-      noBtn.style.transform = `translate(${x}px, ${y}px)`;
-    }
-
-    function updateProximityBoost(clientX, clientY){
-      const r = noBtn.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top  + r.height / 2;
-
-      const dx = clientX - cx;
-      const dy = clientY - cy;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-
-      const nearRadius = 260;
-      const p = clamp(1 - (dist / nearRadius), 0, 1);
-
-      proximityBoost = p * 0.60;
-      if (yesInStage) updateYesScale();
-    }
-
-    function openYippee(){
-      const src = YIPPEE_GIF_URL + (YIPPEE_GIF_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
-      yippeeImg.src = src;
-
-      overlay.classList.add("show");
-      overlay.setAttribute("aria-hidden", "false");
-    }
-
-    function closeYippee(){
-      overlay.classList.remove("show");
-      overlay.setAttribute("aria-hidden", "true");
-      yippeeImg.src = "";
-    }
-
-    closeOverlayBtn.addEventListener("click", closeYippee);
-    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeYippee(); });
-    window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeYippee(); });
-
-    function launchConfetti(count = 120){
-      confetti.innerHTML = "";
-      confetti.classList.add("show");
-
-      const colors = [
-        "#22c55e","#3b82f6","#a855f7","#f59e0b","#ef4444","#06b6d4","#e879f9","#84cc16"
-      ];
-
-      for (let i = 0; i < count; i++){
-        const el = document.createElement("div");
-        el.className = "confetti-piece";
-
-        el.style.left = (Math.random() * 100) + "vw";
-
-        const w = 6 + Math.random() * 10;
-        const h = 8 + Math.random() * 14;
-        el.style.width = w + "px";
-        el.style.height = h + "px";
-
-        el.style.borderRadius = Math.random() > 0.65 ? "999px" : "2px";
-        el.style.background = colors[Math.floor(Math.random() * colors.length)];
-
-        const dur = 1.8 + Math.random() * 1.8;
-        const delay = Math.random() * 0.2;
-        el.style.animationDuration = dur + "s";
-        el.style.animationDelay = delay + "s";
-
-        const drift = (Math.random() * 120 - 60);
-        el.style.transform = `translate(${drift}px, -20px) rotate(${Math.random()*180}deg)`;
-
-        confetti.appendChild(el);
-      }
-
-      setTimeout(() => {
-        confetti.classList.remove("show");
-        confetti.innerHTML = "";
-      }, 3200);
-    }
-
-    function getPointFromEvent(e){
-      const t = e.touches?.[0];
-      const x = t?.clientX ?? e.clientX ?? (window.innerWidth/2);
-      const y = t?.clientY ?? e.clientY ?? (window.innerHeight/2);
-      return { x, y };
-    }
-
-    function onNoAttempt(e){
-      if (e.cancelable) e.preventDefault();
-
-      const pt = getPointFromEvent(e);
-      growYesPermanently();
-      sendNotify("❌ <b>HAYIR</b>'a basmaya çalıştı 😈");
-      moveNoButton(pt);
-    }
-
+    // YES -> show popup
     yesBtn.addEventListener("click", () => {
-      sendNotify("✅ <b>EVET</b>'e basıldı! ☕🎉");
-      openYippee();
-      launchConfetti();
+      overlay.classList.add("show");
     });
 
-    noBtn.addEventListener("pointerdown", onNoAttempt, { passive:false });
-    noBtn.addEventListener("touchstart", onNoAttempt, { passive:false });
-    noBtn.addEventListener("click", onNoAttempt);
-    noBtn.addEventListener("mouseenter", onNoAttempt);
-
-    stage.addEventListener("pointermove", (e) => {
-      updateProximityBoost(e.clientX, e.clientY);
+    // Close popup
+    function closePopup(){
+      overlay.classList.remove("show");
+    }
+    closeBtn.addEventListener("click", closePopup);
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closePopup();
     });
 
-    window.addEventListener("resize", () => {
-      if (yesInStage) updateYesScale();
-    });
+    // Initialize NO button position nicely
+    // Put it somewhere not perfectly predictable
+    moveNoButton();
   </script>
 </body>
 </html>
